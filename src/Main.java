@@ -7,10 +7,9 @@ import java.io.IOException;
 
 public class Main {
 
-
     public static void main(String[] args) throws IOException {
         int[][] imgArr = loadImage("src/images/boat.png");
-        int sizeOfFrame = 8;
+        int sizeOfFrame = 2;
         int numberOfNeurons = 8;
         KohonenNeuralNetwork network = new KohonenNeuralNetwork(sizeOfFrame, numberOfNeurons, 0.01);
         network.trainNetwork(150000, imgArr);
@@ -19,16 +18,22 @@ public class Main {
         saveImage(decompressedImage, "src/images/saved.png");
         double PSNR = countPSNR(imgArr, decompressedImage);
         System.out.println("PSNR: " + PSNR + " dB");
-        double compressionFactor = countCompressionFactor(imgArr, decompressedImage, sizeOfFrame, numberOfNeurons);
+        double compressionFactor = countCompressionFactor(imgArr, sizeOfFrame, numberOfNeurons, 8);
         System.out.println("Compression factor: " + compressionFactor);
     }
 
-    private static double countCompressionFactor(int[][] imgArr, int[][] decompressedImage, int sizeOfFrame, int numberOfNeurons) {
+    private static double countCompressionFactor(int[][] imgArr, int sizeOfFrame, int numberOfNeurons, int bitsPerValue) {
         int numberOfPixels = imgArr.length * imgArr[0].length;
-        float b1 = numberOfPixels * 8;
+        double b1 = numberOfPixels * 8;
         int numberOfFrames = numberOfPixels / sizeOfFrame;
-        float b2 = numberOfFrames * (8+16) + numberOfNeurons + (sizeOfFrame * sizeOfFrame) * 16;
+        int pixelsPerFrame = sizeOfFrame * sizeOfFrame;
+        double b2 = numberOfFrames * (Math.ceil(log2(numberOfNeurons)) + bitsPerValue) + (numberOfNeurons * pixelsPerFrame * bitsPerValue);
         return b2/b1;
+    }
+
+    private static double log2(int n)
+    {
+        return (Math.log(n) / Math.log(2));
     }
 
     private static double countPSNR(int[][] oldImage, int[][] newImage) {
