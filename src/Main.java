@@ -10,7 +10,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         int[][] imgArr = loadImage("src/images/boat.png");
         int sizeOfFrame = 2;
-        int numberOfNeurons = 8;
+        int numberOfNeurons = 2;
         KohonenNeuralNetwork network = new KohonenNeuralNetwork(sizeOfFrame, numberOfNeurons, 0.01);
         network.trainNetwork(150000, imgArr);
         CompressionResult compressionResult = network.compress(imgArr);
@@ -25,8 +25,8 @@ public class Main {
     private static double countCompressionFactor(int[][] imgArr, int sizeOfFrame, int numberOfNeurons, int bitsPerValue) {
         int numberOfPixels = imgArr.length * imgArr[0].length;
         double b1 = numberOfPixels * 8;
-        int numberOfFrames = numberOfPixels / sizeOfFrame;
         int pixelsPerFrame = sizeOfFrame * sizeOfFrame;
+        int numberOfFrames = numberOfPixels / pixelsPerFrame;
         double b2 = numberOfFrames * (Math.ceil(log2(numberOfNeurons)) + bitsPerValue) + (numberOfNeurons * pixelsPerFrame * bitsPerValue);
         double b =  b2/b1;
         return (1-b)* 100;
