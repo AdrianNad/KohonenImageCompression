@@ -28,7 +28,8 @@ public class Main {
         int numberOfFrames = numberOfPixels / sizeOfFrame;
         int pixelsPerFrame = sizeOfFrame * sizeOfFrame;
         double b2 = numberOfFrames * (Math.ceil(log2(numberOfNeurons)) + bitsPerValue) + (numberOfNeurons * pixelsPerFrame * bitsPerValue);
-        return b2/b1;
+        double b =  b2/b1;
+        return (1-b)* 100;
     }
 
     private static double log2(int n)
