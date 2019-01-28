@@ -23,7 +23,6 @@ public class KohonenNeuralNetwork {
             double squareOfSumOfVector = getSquareOfSumOfVector(frame);
             double[] normalizedFrame = normalizeFrame(frame, squareOfSumOfVector);
             train(normalizedFrame);
-            // znormalizuj lub nie wagi i wpusc to do wag a potem zrob przekompresowanie calego obrazka
         }
         for (int i = 0; i < neurons.length; i++) {
             System.out.println("NEURON " + i + ": " + Arrays.toString(neurons[i].getWeights()));
@@ -40,7 +39,19 @@ public class KohonenNeuralNetwork {
         for (int i = 0; i < weights.length; i++) {
             weights[i] = weights[i] + learnStep * (frame[i] - weights[i]);
         }
+        normalizeWeights(weights);
         neurons[bestNeuron].setWeights(weights);
+    }
+
+    private void normalizeWeights(double[] weights) {
+        double squareOfSumOfVector = getSquareOfSumOfVector(weights);
+        for (int i = 0; i < weights.length; i++) {
+            if (squareOfSumOfVector == 0) {
+                weights[i] = 0;
+            } else {
+                weights[i] = weights[i] / squareOfSumOfVector;
+            }
+        }
     }
 
     private int chooseBestNeuron(double[] frame) {
@@ -71,6 +82,14 @@ public class KohonenNeuralNetwork {
 
 
     private double getSquareOfSumOfVector(int[] frame) {
+        double sum = 0;
+        for (int i = 0; i < frame.length; i++) {
+            sum += Math.pow((frame[i]), 2);
+        }
+        return Math.sqrt(sum);
+    }
+
+    private double getSquareOfSumOfVector(double[] frame) {
         double sum = 0;
         for (int i = 0; i < frame.length; i++) {
             sum += Math.pow((frame[i]), 2);

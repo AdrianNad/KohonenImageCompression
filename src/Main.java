@@ -10,9 +10,9 @@ public class Main {
     public static void main(String[] args) throws IOException {
         int[][] imgArr = loadImage("src/images/boat.png");
         int sizeOfFrame = 2;
-        int numberOfNeurons = 2;
+        int numberOfNeurons = 5;
         KohonenNeuralNetwork network = new KohonenNeuralNetwork(sizeOfFrame, numberOfNeurons, 0.01);
-        network.trainNetwork(150000, imgArr);
+        network.trainNetwork(2000, imgArr);
         CompressionResult compressionResult = network.compress(imgArr);
         int[][] decompressedImage = decompress(compressionResult);
         saveImage(decompressedImage, "src/images/saved.png");
